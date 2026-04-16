@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 10
+
+int graph[MAX][MAX];
+int visited[MAX];
+int n;
+
+// Queue for BFS
+int queue[MAX], front = -1, rear = -1;
+
+// Add edge
+void addEdge(int u, int v) {
+    graph[u][v] = 1;
+    graph[v][u] = 1;
+}
+
+// Display graph
+void display() {
+    printf("\nAdjacency Matrix:\n");
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            printf("%d ", graph[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+// BFS
+void BFS(int start) {
+    int i;
+    for(i = 0; i < n; i++)
+        visited[i] = 0;
+
+    front = rear = -1;
+
+    queue[++rear] = start;
+    visited[start] = 1;
+
+    printf("\nBFS Traversal: ");
+
+    while(front != rear) {
+        int node = queue[++front];
+        printf("%d ", node);
+
+        for(i = 0; i < n; i++) {
+            if(graph[node][i] && !visited[i]) {
+                queue[++rear] = i;
+                visited[i] = 1;
+            }
+        }
+    }
+}
+
+// DFS
+void DFS(int node) {
+    visited[node] = 1;
+    printf("%d ", node);
+
+    for(int i = 0; i < n; i++) {
+        if(graph[node][i] && !visited[i]) {
+            DFS(i);
+        }
+    }
+}
+
+// Main
+int main() {
+    int choice, u, v, start;
+
+    printf("Enter number of locations: ");
+    scanf("%d", &n);
+
+    // Initialize graph
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            graph[i][j] = 0;
+        }
+    }
+
+    while(1) {
+        printf("\n--- MENU ---\n");
+        printf("1. Add Connection\n");
+        printf("2. Display Graph\n");
+        printf("3. BFS Search\n");
+        printf("4. DFS Search\n");
+        printf("5. Exit\n");
+
+        printf("Enter choice: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1:
+                printf("Enter two locations (0 to %d): ", n-1);
+                scanf("%d %d", &u, &v);
+                addEdge(u, v);
+                break;
+
+            case 2:
+                display();
+                break;
+
+            case 3:
+                printf("Enter starting location: ");
+                scanf("%d", &start);
+                BFS(start);
+                break;
+
+            case 4:
+                for(int i = 0; i < n; i++)
+                    visited[i] = 0;
+
+                printf("Enter starting location: ");
+                scanf("%d", &start);
+                printf("\nDFS Traversal: ");
+                DFS(start);
+                break;
+
+            case 5:
+                exit(0);
+
+            default:
+                printf("Invalid choice!\n");
+        }
+    }
+
+    return 0;
+}
